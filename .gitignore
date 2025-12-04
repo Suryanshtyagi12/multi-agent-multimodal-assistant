@@ -1,0 +1,24 @@
+# Ignore virtual environment
+venv/
+.env
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore OS/system files
+.DS_Store
+
+# Ignore Chroma DB files
+chroma/
+chroma_db/
+*.sqlite3
+
+# Ignore uploads
+*.png
+*.jpg
+*.jpeg
+
+# Ignore Tesseract installer
+*.exe
+tesseract-ocr/

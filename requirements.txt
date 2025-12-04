@@ -1,7 +1,8 @@
 langchain
 langchain-core
 langchain-community
-langchain-openai
+groq
+langchain-groq
 chromadb
 sentence-transformers
 pypdf
