@@ -3,21 +3,16 @@
 import os
 import re
 import chromadb
-import pytesseract
+import easyocr
+import numpy as np
+
 from PIL import Image
 from sentence_transformers import SentenceTransformer
 
 from app.config import CHROMA_PATH
 
 # -------------------------------------------------
-# OPTIONAL: Hard-set Tesseract path (Windows)
-# -------------------------------------------------
-TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-if os.path.exists(TESSERACT_PATH):
-    pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
-
-# -------------------------------------------------
-# Models
+# Models & OCR Initialization
 # -------------------------------------------------
 TEXT_EMBED_MODEL = "all-MiniLM-L6-v2"
 IMAGE_EMBED_MODEL = "clip-ViT-B-32"
@@ -25,8 +20,12 @@ IMAGE_EMBED_MODEL = "clip-ViT-B-32"
 text_embedder = SentenceTransformer(TEXT_EMBED_MODEL)
 image_embedder = SentenceTransformer(IMAGE_EMBED_MODEL)
 
+# Initialize EasyOCR Reader (English)
+# Set gpu=True if you have a GPU available
+ocr_reader = easyocr.Reader(['en'], gpu=False)
+
 # -------------------------------------------------
-# OCR Text Cleaning (CRITICAL)
+# OCR Text Cleaning
 # -------------------------------------------------
 def clean_ocr_text(text: str) -> str:
     """
@@ -58,7 +57,7 @@ def chunk_text(text, chunk_size=60, overlap=15):
 # -------------------------------------------------
 def ingest_image(image_path: str):
     """
-    Ingest image with OCR + CLIP embeddings into ChromaDB
+    Ingest image with EasyOCR + CLIP embeddings into ChromaDB
     """
 
     if not os.path.exists(image_path):
@@ -83,14 +82,16 @@ def ingest_image(image_path: str):
         return
 
     # -------------------------------------------------
-    # OCR Text (better config for screenshots)
+    # EasyOCR Extraction
     # -------------------------------------------------
     try:
-        raw_text = pytesseract.image_to_string(
-            img,
-            config="--psm 6"
-        )
+        # EasyOCR needs a numpy array or file path
+        img_np = np.array(img)
+        results = ocr_reader.readtext(img_np, detail=0)
+        
+        raw_text = " ".join(results)
         ocr_text = clean_ocr_text(raw_text)
+        
         print(f"🔍 [OCR] Clean text length: {len(ocr_text)}")
     except Exception as e:
         print(f"❌ [OCR ERROR]: {e}")
@@ -124,7 +125,7 @@ def ingest_image(image_path: str):
         print("⚠️ [IMAGE INGEST] OCR text too short, skipped")
 
     # -------------------------------------------------
-    # Store image embedding (CLIP) – optional
+    # Store image embedding (CLIP)
     # -------------------------------------------------
     try:
         image_embedding = image_embedder.encode(img).tolist()
