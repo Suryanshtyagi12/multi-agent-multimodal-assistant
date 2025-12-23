@@ -1,22 +1,9 @@
-# app/ingestion/pdf_ingest.py
-
 import os
 import fitz  # PyMuPDF
 from pypdf import PdfReader
 from PIL import Image
 import chromadb
 from sentence_transformers import SentenceTransformer
-
-# OCR (safe import)
-import pytesseract
-
-# -------------------------------------------------
-# OPTIONAL: Hard-set Tesseract path (Windows safety)
-# -------------------------------------------------
-TESSERACT_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-if os.path.exists(TESSERACT_PATH):
-    pytesseract.pytesseract.tesseract_cmd = TESSERACT_PATH
-
 from app.config import CHROMA_PATH
 
 # -------------------------------------------------
@@ -49,8 +36,8 @@ def chunk_text(text, chunk_size=400, overlap=80):
 # -------------------------------------------------
 def ingest_pdf(pdf_path: str):
     """
-    Ingest a PDF file into ChromaDB with OCR fallback.
-    Compatible with ChromaDB >= 0.4.x (auto-persist).
+    Ingest a PDF file into ChromaDB.
+    OCR fallback removed for cloud compatibility (Streamlit).
     """
 
     if not os.path.exists(pdf_path):
@@ -73,8 +60,6 @@ def ingest_pdf(pdf_path: str):
     # PDF Readers
     # -------------------------------------------------
     reader = PdfReader(pdf_path)
-    ocr_doc = fitz.open(pdf_path)
-
     file_name = os.path.basename(pdf_path)
     added_chunks = 0
 
@@ -82,24 +67,12 @@ def ingest_pdf(pdf_path: str):
     # Process Pages
     # -------------------------------------------------
     for page_idx, page in enumerate(reader.pages):
+        # Extract text using pypdf
         text = page.extract_text() or ""
 
-        # OCR fallback
+        # Safe Fallback: If pypdf fails, skip the page (Removes Tesseract dependency)
         if not text.strip():
-            try:
-                print(f"🔍 [OCR] Page {page_idx + 1}")
-                pix = ocr_doc.load_page(page_idx).get_pixmap()
-                img = Image.frombytes(
-                    "RGB",
-                    [pix.width, pix.height],
-                    pix.samples
-                )
-                text = pytesseract.image_to_string(img)
-            except Exception as e:
-                print(f"❌ [OCR ERROR] Page {page_idx + 1}: {e}")
-                continue
-
-        if not text.strip():
+            print(f"⚠️ [SKIP] Page {page_idx + 1}: No extractable text found (scanned image).")
             continue
 
         # -------------------------------------------------
@@ -108,9 +81,11 @@ def ingest_pdf(pdf_path: str):
         chunks = chunk_text(text)
 
         for chunk_idx, chunk in enumerate(chunks):
+            # Ignore tiny fragments
             if len(chunk.strip()) < 30:
                 continue
 
+            # Generate vector embedding
             embedding = embed_model.encode(chunk).tolist()
 
             doc_id = f"{file_name}_p{page_idx}_c{chunk_idx}"
@@ -128,9 +103,6 @@ def ingest_pdf(pdf_path: str):
 
             added_chunks += 1
 
-    # -------------------------------------------------
-    # NO persist() call (ChromaDB auto-persists)
-    # -------------------------------------------------
     print(f"✅ [PDF INGEST] Completed")
     print(f"📦 [PDF INGEST] Total chunks added: {added_chunks}")
     print(f"💾 [PDF INGEST] Data auto-persisted by ChromaDB")
