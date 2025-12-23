@@ -75,17 +75,6 @@ with cols[2]:
     st.caption("💡 **Unlock Insights**")
     st.warning("Query your data naturally. Use our **Automation Suite** to turn complex findings into professional emails and JSON reports.")
 
-# cols = st.columns(3)
-# with cols[0]:
-#     st.markdown("### 1️⃣ Prepare")
-#     st.info("Upload files. **Cleanup** the DB if starting a new topic to prevent mixed results.")
-# with cols[1]:
-#     st.markdown("### 2️⃣ Ingest")
-#     st.info("The agents will vectorize your data. This creates the permanent local knowledge base.")
-# with cols[2]:
-#     st.markdown("### 3️⃣ Analyze")
-#     st.info("Ask questions. Use the **Automation Center** to generate structured output.")
-
 st.divider()
 
 # -------------------------------------------------
@@ -168,16 +157,19 @@ if st.session_state.last_rag_response:
     with st.chat_message("assistant"):
         st.markdown(res.get("answer", "No answer found."))
 
-    # Evidence Tabs
-    t1, t2 = st.tabs(["📄 Text Evidence", "🖼 Image Evidence"])
-    with t1:
+    # --- COLLAPSIBLE EVIDENCE SECTION ---
+    st.markdown("### 🔍 Source Verification")
+    
+    with st.expander("📄 View Text Evidence", expanded=False):
         text_chunks = res.get("text", [])
         if text_chunks:
-            for txt in text_chunks: st.caption(f"📌 {txt}")
+            for txt in text_chunks: 
+                st.caption(f"📌 {txt}")
+                st.markdown("---")
         else:
             st.write("No direct text evidence found.")
     
-    with t2:
+    with st.expander("🖼 View Image Evidence", expanded=False):
         image_paths = res.get("images", [])
         if image_paths:
             img_cols = st.columns(len(image_paths))
@@ -185,11 +177,11 @@ if st.session_state.last_rag_response:
                 rel_p = get_relative_path(p)
                 try:
                     img_file = Image.open(rel_p)
-                    img_cols[i].image(img_file, use_container_width=True)
+                    img_cols[i].image(img_file, use_container_width=True, caption=f"Source: {os.path.basename(p)}")
                 except:
                     img_cols[i].error(f"Missing File: {os.path.basename(p)}")
         else:
-            st.write("No relevant image evidence found.")
+            st.write("No relevant visual evidence found.")
 
     # -------------------------------------------------
     # 6. AUTOMATION CENTER
@@ -215,13 +207,12 @@ if st.session_state.last_rag_response:
             st.markdown("#### Technical JSON Report")
             bug_output = generate_bug_report(raw_ctx, "Format as valid JSON.")
             
-            # Sanitization logic to remove Markdown backticks
             clean_json = bug_output.replace("```json", "").replace("```", "").strip()
             try:
                 bug_data = json.loads(clean_json)
                 st.json(bug_data)
             except:
-                st.warning("AI output was not pure JSON. Displaying as raw text:")
+                st.warning("AI output was not perfectly formatted JSON. Raw text below:")
                 st.code(bug_output)
 
 # -------------------------------------------------
