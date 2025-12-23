@@ -1,19 +1,22 @@
-langchain
-langchain-core
-langchain-community
-groq
-langchain-groq
+# UI
+streamlit==1.37.1
+
+# Core
+python-dotenv
+requests
+pillow
+numpy<2
+
+# RAG
 chromadb
 sentence-transformers
 pypdf
-pymupdf
-Pillow
-fastapi
-uvicorn
-streamlit
-python-multipart
-requests
-pytesseract
+langchain-groq
 
+# OCR (Cloud-safe)
 easyocr
 opencv-python-headless==4.9.0.80
+
+# Torch (CPU only, REQUIRED for EasyOCR)
+torch==2.2.2
+torchvision==0.17.2
