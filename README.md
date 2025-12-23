@@ -1,3 +1,4 @@
+
 # Multi-Agent Multimodal Enterprise RAG Assistant
 
 A production-style **Multi-Agent, Multimodal Retrieval-Augmented Generation (RAG) system**
@@ -122,4 +123,6 @@ Email drafts
 Executive summaries
 
 Bug reports (JSON)
+
+
 
