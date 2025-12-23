@@ -11,7 +11,8 @@ numpy<2
 chromadb
 sentence-transformers
 pypdf
-PyMuPDF
+PyMuPDF==1.23.26
+
 langchain-groq
 
 # OCR (Cloud-safe)
