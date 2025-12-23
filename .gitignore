@@ -1,0 +1,51 @@
+# -------------------------
+# Python
+# -------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+
+# -------------------------
+# OS files
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Streamlit
+# -------------------------
+.streamlit/
+
+# -------------------------
+# Vector DB (Chroma)
+# -------------------------
+chroma_db/
+*.sqlite3
+*.bin
+
+# -------------------------
+# Uploads (user data only)
+# -------------------------
+temp_uploads/
+
+# -------------------------
+# OCR installers / binaries
+# -------------------------
+*.exe
+# Virtual environments
+venv/
+
+
+
+
+# Runtime data
+
+
+
+
+# OS
+.DS_Store
+Thumbs.db
