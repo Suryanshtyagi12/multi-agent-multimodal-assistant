@@ -11,6 +11,7 @@ numpy<2
 chromadb
 sentence-transformers
 pypdf
+PyMuPDF
 langchain-groq
 
 # OCR (Cloud-safe)
@@ -20,3 +21,7 @@ opencv-python-headless==4.9.0.80
 # Torch (CPU only, REQUIRED for EasyOCR)
 torch==2.2.2
 torchvision==0.17.2
+
+# UI
+streamlit==1.37.1
+
