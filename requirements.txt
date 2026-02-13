@@ -2,27 +2,25 @@
 streamlit==1.37.1
 
 # Core
-python-dotenv
-requests
-pillow
+python-dotenv==1.0.1
+requests==2.31.0
+pillow==10.2.0
 numpy<2
 
 # RAG
-chromadb
-sentence-transformers
-pypdf
+chromadb==0.4.24
+sentence-transformers==2.2.2
+transformers==4.37.2
+accelerate==0.25.0
+peft==0.7.1
+pypdf==4.1.0
 PyMuPDF==1.23.26
+langchain-groq==0.1.4
 
-langchain-groq
-
-# OCR (Cloud-safe)
-easyocr
+# OCR
+easyocr==1.7.1
 opencv-python-headless==4.9.0.80
 
-# Torch (CPU only, REQUIRED for EasyOCR)
-torch==2.2.2
-torchvision==0.17.2
-
-# UI
-streamlit==1.37.1
-
+# Torch (CPU only)
+torch==2.1.2
+torchvision==0.16.2
