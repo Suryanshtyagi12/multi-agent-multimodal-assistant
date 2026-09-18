@@ -3,7 +3,7 @@ title: Scholarrag
 emoji: 🦀
 colorFrom: green
 colorTo: green
-sdk: docker
+sdk: gradio
 pinned: false
 ---
 
