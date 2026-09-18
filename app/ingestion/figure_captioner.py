@@ -1,15 +1,14 @@
 import os
 import time
-import base64
 import logging
-from google import genai
-from google.genai import types
+import google.generativeai as genai
+import PIL.Image
 from dotenv import load_dotenv
 load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-GEMINI_VISION_MODEL = "gemini-2.5-flash"
+GEMINI_VISION_MODEL = "gemini-1.5-flash"
 
 GEMINI_KEYS = [
     os.getenv("GEMINI_API_KEY"),
@@ -26,24 +25,11 @@ Describe what this figure shows in detail. Include:
 - Any notable values or comparisons visible
 Be specific and technical. Minimum 3 sentences."""
 
-def _image_to_bytes(image_path: str) -> bytes:
-    with open(image_path, "rb") as f:
-        return f.read()
-
 def _caption_with_gemini(image_path: str, api_key: str) -> str:
-    client = genai.Client(api_key=api_key)
-    image_bytes = _image_to_bytes(image_path)
-    
-    response = client.models.generate_content(
-        model=GEMINI_VISION_MODEL,
-        contents=[
-            types.Part.from_bytes(
-                data=image_bytes,
-                mime_type="image/png"
-            ),
-            FIGURE_PROMPT
-        ]
-    )
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(GEMINI_VISION_MODEL)
+    img = PIL.Image.open(image_path)
+    response = model.generate_content([FIGURE_PROMPT, img])
     return response.text.strip()
 
 def caption_figure(image_path: str) -> str:
