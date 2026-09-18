@@ -1,11 +1,4 @@
----
-title: Scholarrag
-emoji: 🦀
-colorFrom: green
-colorTo: green
-sdk: docker
-pinned: false
----
+
 
 # ScholarRAG — Multi-Agent Multimodal RAG for Research Papers 📚
 
