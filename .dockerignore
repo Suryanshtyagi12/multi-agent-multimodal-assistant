@@ -1,0 +1,14 @@
+venv/
+venv_old/
+__pycache__/
+*.pyc
+*.pyo
+.env
+chroma_db/
+figures/
+.git/
+.gitignore
+scholarrag.log
+test_paper.pdf
+*.pdf
+node_modules/
