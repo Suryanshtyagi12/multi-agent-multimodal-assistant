@@ -3,7 +3,7 @@ uvicorn==0.30.0
 python-multipart==0.0.9
 streamlit==1.40.0
 python-dotenv==1.0.0
-docling==2.5.0
+docling>=2.5.0
 nltk==3.9.1
 chromadb==0.5.20
 rank-bm25==0.2.2
