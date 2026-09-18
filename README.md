@@ -1,4 +1,16 @@
 ---
+title: Scholarrag
+emoji: ??
+colorFrom: green
+colorTo: green
+sdk: gradio
+sdk_version: 6.28.0
+python_version: '3.12'
+app_file: app.py
+pinned: false
+---
+
+---
 title: ScholarRAG
 emoji: 📚
 colorFrom: blue
@@ -32,3 +44,4 @@ multi-agent LangGraph system with openai/gpt-oss-120b reasoning.
 | Deployment | Local only | HuggingFace Spaces Docker — free |
 
 ## Architecture
+
