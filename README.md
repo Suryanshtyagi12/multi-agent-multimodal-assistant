@@ -1,11 +1,11 @@
 ---
 title: Scholarrag
-emoji: ??
+emoji: 🦀
 colorFrom: green
 colorTo: green
 sdk: gradio
-sdk_version: 6.28.0
-python_version: '3.12'
+sdk_version: 4.0.0
+python_version: 3.12
 app_file: app.py
 pinned: false
 ---
